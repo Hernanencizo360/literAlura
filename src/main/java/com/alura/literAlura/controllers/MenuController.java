@@ -30,11 +30,13 @@ public class MenuController {
                         *           BIENVENIDO A LITERALURA              *
                         *       Por favor seleccione una Opción          *
                         **************************************************
-                        * 1) Buscar un Libro por Titulo en la API.       *
+                        * 1) Buscar un Libro por Titulo en Gutendex      *
                         * 2) Listar Libros registrados en la BBDD.       *  
                         * 3) Listar Autores registrados en la BBDD.      *
                         * 4) Listar Autores vivos en un determinado año. *  
                         * 5) Listar Libros por idioma.                   *
+                        * 6) Top 10 libros más descargados de Gutendex.  *
+                        * 7) Buscar un Autor en la BBDD.                 *
                         * 0) Salir.                                      *
                         **************************************************\033[39;49m
                         """);
@@ -62,12 +64,20 @@ public class MenuController {
                         System.out.println("Listar Libros por idioma.");
                         menuService.listarLibrosPorIdioma();
                         break;
+                    case 6:
+                        System.out.println("Top 10 libros más descargados:");
+                        menuService.buscarTop10Descargas();
+                        break;
+                    case 7:
+                        System.out.println("Buscar Autor en la BBDD.");
+                        menuService.buscarAutorPorNombre();
+                        break;
                     case 0:
                         System.out.println("Saliendo...");
                         continuar = false;
                         break;
                     default:
-                        System.out.println("Debe ingresar un número entre 0 y 5.");
+                        System.out.println("Debe ingresar un número entre 0 y 7.");
                 }
             } catch (InputMismatchException im) {
                 System.out.println("Error en el tipo de dato, se espera un entero.");

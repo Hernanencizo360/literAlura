@@ -37,6 +37,10 @@ public class AutorService {
     public List<Autor> obtenerAutoresVivosEnAnio(int anio) {
         return autorRepository.findAutoresVivosEnAnio(anio);
     }
+
+    public List<Autor> buscarAutorPorNombre(String nombre) {
+        return autorRepository.findByNameContainingIgnoreCase(nombre);
+    }
 }
 
 

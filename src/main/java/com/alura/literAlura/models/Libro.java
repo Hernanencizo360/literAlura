@@ -13,6 +13,7 @@ public class Libro {
     private String title;
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> languages;
+    private Integer download_count;
 
     @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(

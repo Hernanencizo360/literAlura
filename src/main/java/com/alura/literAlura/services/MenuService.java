@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.IntStream;
 
 @Service
 public class MenuService {
@@ -25,6 +26,9 @@ public class MenuService {
 
     private final Scanner leer = new Scanner(System.in).useDelimiter("\n");
 
+    private final String URL_BASE = "https://gutendex.com/books/?";
+
+    //Case: 1
     public void buscarLibroEnLaApi() {
         System.out.println("Ingrese el título del libro: ");
         String titulo = leer.next();
@@ -33,7 +37,7 @@ public class MenuService {
             return;
         }
         titulo = titulo.replace(" ", "%20");
-        String url = "https://gutendex.com/books?search=" + titulo;
+        String url = URL_BASE + "search=" + titulo;
 
         try {
             String json = apiService.buscarLibro(url);
@@ -53,16 +57,19 @@ public class MenuService {
         }
     }
 
+    //Case 2:
     public void listarLibrosRegistrados() {
         List<Libro> libros = libroService.obtenerTodosLosLibros();
         PresentationUtils.mostrarLibros(libros);
     }
 
+    //Case 3:
     public void listarAutores() {
         List<Autor> autores = autorService.obtenerTodosLosAutores();
         PresentationUtils.mostrarAutores(autores);
     }
 
+    //Case 4:
     public void listarAutoresVivosEnAnio() {
         int anio;
         boolean anioValido = false;
@@ -115,7 +122,7 @@ public class MenuService {
         return libro;
     }
 
-    //Case 5
+    //Case 5:
     public void listarLibrosPorIdioma() {
         boolean inputValido = false;
         String idioma = "";
@@ -142,6 +149,65 @@ public class MenuService {
 
     private boolean validarCodigoIdioma(String codigo) {
         return codigo != null && codigo.matches("[a-zA-Z]{2}");
+    }
+
+    //Case 6:
+    public void buscarTop10Descargas() {
+        try {
+            String json = apiService.buscarLibro(URL_BASE);
+
+            // Pasar el json al libroService para la deserialización y limitar al top libros
+            List<Libro> libros = libroService.procesarJson(json).stream().limit(10).toList();
+
+            IntStream.range(0, libros.size())
+                    .forEach(i -> {
+                        System.out.println("Puesto: " + (i + 1));
+                        Libro libro = libros.get(i);
+                        System.out.println("Título: " + libro.getTitle());
+
+                        String autor = libro.getAuthors().stream()
+                                .findFirst()
+                                .map(Autor::getName)
+                                .orElse("No disponible");
+                        System.out.println("Autor: " + autor);
+
+                        System.out.println("Descargas: " + libro.getDownload_count());
+                        System.out.println();
+                    });
+        } catch (IOException | InterruptedException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    //Case 7:
+    public void buscarAutorPorNombre() {
+        String nombre = null;
+        boolean nombreValido = false;
+
+        while (!nombreValido) {
+            System.out.println("Ingrese el nombre del autor que desea buscar (mínimo 3 letras, solo letras): ");
+            nombre = leer.next();
+
+            if (nombre == null || nombre.trim().isEmpty()) {
+                System.out.println("El nombre no puede estar vacío.");
+            }  else if (!nombre.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")) {
+                System.out.println("El nombre solo puede contener letras, NO números.");
+            } else if (nombre.length() < 3) {
+                System.out.println("El nombre debe contener al menos 3 letras.");
+            } else {
+                nombreValido = true;
+            }
+        }
+
+        // Realizar búsqueda en el servicio de autor
+        List<Autor> autores = autorService.buscarAutorPorNombre(nombre);
+
+        // Mostrar resultados
+        if (autores.isEmpty()) {
+            System.out.println("No se encontraron autores con el nombre proporcionado.");
+        } else {
+            PresentationUtils.mostrarAutores(autores);
+        }
     }
 }
 

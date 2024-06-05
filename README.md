@@ -84,6 +84,10 @@ Si tienes algún problema o sugerencia, por favor abre un problema [aquí](https
 
 - **[Hernán Eladio Encizo](https://github.com/Hernanencizo360)** - _Trabajo inicial_
 
+## Insignias 🎖️🏆️🎖️️
+
+![Insignia-Badge](badge-literalura.png)
+
 ## Links de Interés 🔗
 
 [![GitHub](https://img.shields.io/badge/GitHub-000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Hernanencizo360)
